@@ -1,15 +1,8 @@
 import { useState } from 'react';
 import './App.css';
 import {
-  Box,
-  Button,
   createTheme,
   CssBaseline,
-  ListItem,
-  Paper,
-  Stack,
-  styled,
-  TextField,
   ThemeProvider,
   Typography,
 } from '@mui/material';
@@ -44,14 +37,14 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Typography fontWeight='bold' style={{ marginTop:'1em',  marginBottom: '1em' }} color={'info'} align="center"  variant='h3'>
+      <Typography fontWeight='bold' style={{ marginTop: '1em', marginBottom: '1em' }} color={'info'} align="center" variant='h3'>
         Feature Flags Encoding Tool
       </Typography>
 
       <ChipsList chipData={featureFlags} setChipData={setFeatureFlags} />
 
       <FeatureFlagForm
-      encodingTitle={encodingTitle} setEncodingTitle={setEncodingTitle}
+        encodingTitle={encodingTitle} setEncodingTitle={setEncodingTitle}
         setFlagText={setFlagText} setFeatureFlags={setFeatureFlags}
         setEncodingList={setEncodingList} flagText={flagText} featureFlags={featureFlags} />
 
