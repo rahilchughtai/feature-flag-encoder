@@ -1,4 +1,4 @@
-import { EnvironmentOption, FeatureFlagChipData, TenantOption } from "../models/featureFlagModel";
+import { FeatureFlagChipData } from "../models/featureFlagModel";
 
 export function encodeFlags(featureFlags: FeatureFlagChipData[]): string {
     const payload: Record<string, string> = {}

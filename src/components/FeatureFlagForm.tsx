@@ -66,7 +66,7 @@ function FeatureFlagForm({ featureFlags, setFeatureFlags, flagText, setFlagText,
   return (
     <Box
       display={'flex'}
-      sx={{flexDirection: {xs: 'column', md: 'row'}}}
+      sx={{ flexDirection: { xs: 'column', md: 'row' } }}
       justifyContent={'center'}
       alignItems={'center'}
       gap={'1em'}
@@ -75,7 +75,7 @@ function FeatureFlagForm({ featureFlags, setFeatureFlags, flagText, setFlagText,
         onKeyDown={onSpecialKeyDown}
         onChange={handleTextChange}
         value={flagText}
-        style={{ width: '10%' }}
+        sx={{width: { xs: '70%', md: '20%' }}}
         id="outlined-basic"
         label="Enter your feature flags"
         variant="outlined"
@@ -83,7 +83,7 @@ function FeatureFlagForm({ featureFlags, setFeatureFlags, flagText, setFlagText,
       <TextField
         onChange={handleEncodingTitleChange}
         value={encodingTitle}
-        style={{ width: '20%' }}
+        sx={{width: { xs: '70%', md: '20%' }}}
         id="outlined-basic"
         label="Enter a Title for your Encoding"
         variant="outlined"
