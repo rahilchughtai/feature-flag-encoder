@@ -1,24 +1,21 @@
 import { Box, Button, TextField } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { FeatureFlagChipData, FeatureFlagEncoding } from '../models/featureFlagModel';
 import { encodeFlags } from '../utils/encoder';
 
 
 interface FeatureFlagsFormProps {
   featureFlags: FeatureFlagChipData[];
-  setFeatureFlags: React.Dispatch<React.SetStateAction<FeatureFlagChipData[]>>;
-  flagText: string;
-  setFlagText: React.Dispatch<React.SetStateAction<string>>;
-  setEncodingList: React.Dispatch<React.SetStateAction<FeatureFlagEncoding[]>>;
   encodingTitle: string;
-  setEncodingTitle: React.Dispatch<React.SetStateAction<string>>;
+  onEncodingTitleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onGenereateEncoding: () => void;
+  onAddFeatureFlag: (flagText: string) => void;
+
 }
 
 
-function FeatureFlagForm({ featureFlags, setFeatureFlags, flagText, setFlagText, setEncodingList,
-  encodingTitle, setEncodingTitle
-}: FeatureFlagsFormProps) {
-
+function FeatureFlagForm({ onAddFeatureFlag, encodingTitle, onEncodingTitleChange, onGenereateEncoding }: FeatureFlagsFormProps) {
+  const [flagText, setFlagText] = useState('');
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
     if (val.length >= 0 && val.length <= 10) {
@@ -26,40 +23,19 @@ function FeatureFlagForm({ featureFlags, setFeatureFlags, flagText, setFlagText,
     }
   }
 
-  const handleEncodingTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const val = event.target.value;
-    setEncodingTitle(val);
-  }
 
-  const genereateEncoding = () => {
-    if (featureFlags.length === 0) {
+  const handleAdd = () => {
+    if (flagText.length === 0) {
       return;
     }
-    const featureFlagsCopy = [...featureFlags];
-    const encoding = encodeFlags(featureFlagsCopy);
-    setEncodingList((eList) => [{ encodingTitle, encoding, featureFlags: featureFlagsCopy }, ...eList]);
-    setFeatureFlags([]);
-    setEncodingTitle('');
-    setFlagText('');
-  }
-
-  const addFeatureFlag = () => {
-    if (flagText.length === 0) {
-      return
-    }
-    setFeatureFlags(flags => [...flags, {
-      key: flags.length,
-      label: flagText,
-      enabled: true
-    }]);
+    onAddFeatureFlag(flagText)
     setFlagText('')
   }
-
 
   const onSpecialKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' || event.key === ',') {
       event.preventDefault()
-      addFeatureFlag()
+      onAddFeatureFlag(flagText)
     }
   }
 
@@ -75,21 +51,21 @@ function FeatureFlagForm({ featureFlags, setFeatureFlags, flagText, setFlagText,
         onKeyDown={onSpecialKeyDown}
         onChange={handleTextChange}
         value={flagText}
-        sx={{width: { xs: '70%', md: '20%' }}}
+        sx={{ width: { xs: '70%', md: '20%' } }}
         id="outlined-basic"
         label="Enter your feature flags"
         variant="outlined"
       />
       <TextField
-        onChange={handleEncodingTitleChange}
+        onChange={onEncodingTitleChange}
         value={encodingTitle}
-        sx={{width: { xs: '70%', md: '20%' }}}
+        sx={{ width: { xs: '70%', md: '20%' } }}
         id="outlined-basic"
         label="Enter a Title for your Encoding"
         variant="outlined"
       />
       <Button
-        onClick={addFeatureFlag}
+        onClick={handleAdd}
         style={{
           padding: '1em',
           width: '6rem'
@@ -99,7 +75,7 @@ function FeatureFlagForm({ featureFlags, setFeatureFlags, flagText, setFlagText,
         Add
       </Button>
       <Button
-        onClick={genereateEncoding}
+        onClick={onGenereateEncoding}
         color='primary' style={{
           padding: '1em',
           width: '6rem'

@@ -10,6 +10,7 @@ interface EncodedDatapProps {
 }
 export default function EncodedDataDisplay({ encodingList, setEncodingList }: EncodedDatapProps) {
     const [open, setOpen] = useState(false);
+    const ListTitle = encodingList.length > 0 ? 'Encoded Feature Flags List' : 'Your encodings will show up here';
 
     const handleClose = (
         _: React.SyntheticEvent | Event,
@@ -27,7 +28,6 @@ export default function EncodedDataDisplay({ encodingList, setEncodingList }: En
         setOpen(true);
     };
 
-    const ListTitle = encodingList.length > 0 ? 'Encoded Feature Flags List' : 'Your encodings will show up here';
 
     return (
         <Box>
