@@ -1,4 +1,4 @@
-import { Paper, Stack, TextField, Typography, IconButton, Button, Tooltip, Modal, Box } from '@mui/material'
+import { Paper, Stack, TextField, Typography, IconButton, Tooltip, Modal, Box } from '@mui/material'
 import React, { useState } from 'react'
 import { FeatureFlagEncoding } from '../models/featureFlagModel';
 import { encodeFlags } from '../utils/encoder';
@@ -10,6 +10,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import FlagChip from './chips/FlagChip';
 import { AddCircleOutlined } from '@mui/icons-material';
 import FeatureFlagForm from './FeatureFlagForm';
+import ChipsList from './chips/ChipsList';
 
 interface EncodingListProps {
     encodingList: FeatureFlagEncoding[],
@@ -18,11 +19,12 @@ interface EncodingListProps {
 }
 
 const style = {
-    position: 'absolute' as 'absolute',
+    position: 'absolute' as const,
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: '80%',
+    height: 400,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -33,6 +35,10 @@ const style = {
 export default function EncodedDataListItem({ encodingList, handleCopy, setEncodingList }: EncodingListProps) {
 
     const [open, setOpen] = useState(false);
+    const [clickedEncodingIndex, setClickedEncoding] = useState(0);
+
+    const clickedEncodingFeatureFlags = encodingList.length === 0 ? [] : encodingList[clickedEncodingIndex].featureFlags
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -83,10 +89,21 @@ export default function EncodedDataListItem({ encodingList, handleCopy, setEncod
     }
 
     const handleAddFlag = (index: number) => {
+        setClickedEncoding(index)
         handleOpen()
     }
 
-    const handleClick = (key: number, index: number) => {
+
+    const onAddFlagEvent = (flagText: string, index: number) => {
+        const updatedList = [...encodingList];
+        const key = updatedList[index].featureFlags.length
+        updatedList[index].featureFlags.push({ enabled: true, key, label: flagText })
+        setEncodingList(updatedList)
+
+    }
+
+    const handleChipClick = (key: number, index: number) => {
+        console.debug([key, index])
         const updatedList = encodingList.map((encoding, i) => {
             if (i === index) {
                 const updatedFlags = encoding.featureFlags.map(flag => {
@@ -139,7 +156,7 @@ export default function EncodedDataListItem({ encodingList, handleCopy, setEncod
                                     <FlagChip
                                         key={'chip' + data.key}
                                         style={{ padding: '1em' }}
-                                        data={data} onClick={() => handleClick(data.key, index)}
+                                        data={data} onClick={() => handleChipClick(data.key, index)}
                                         onDelete={() => handleChipDelete(data.key, index)}
                                     />
                                 )}
@@ -181,9 +198,21 @@ export default function EncodedDataListItem({ encodingList, handleCopy, setEncod
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Button>
-                        Add
-                    </Button>
+                    <Typography variant='h6' style={{ textAlign: 'center' }}>
+                        Add new Feature Flags
+                    </Typography>
+                    <ChipsList chipData={clickedEncodingFeatureFlags}
+                        onChipClick={(number) => handleChipClick(number, clickedEncodingIndex)}
+                        onChipDelete={(number) => handleChipDelete(number, clickedEncodingIndex)} />
+
+                    <FeatureFlagForm
+                        sx={{ width: '100%' }}
+                        showEncodingTitleInput={false}
+                        showEncodeButton={false}
+                        onEncodingTitleChange={() => null}
+                        onAddFeatureFlag={(flagText) => onAddFlagEvent(flagText, clickedEncodingIndex)}
+                        onGenereateEncoding={() => null}
+                        featureFlags={clickedEncodingFeatureFlags} encodingTitle='A' />
                 </Box>
             </Modal>
         </>

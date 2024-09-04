@@ -1,7 +1,6 @@
-import { Box, Button, TextField } from '@mui/material'
+import { Box, Button, SxProps, TextField, Theme } from '@mui/material'
 import React, { useState } from 'react'
-import { FeatureFlagChipData, FeatureFlagEncoding } from '../models/featureFlagModel';
-import { encodeFlags } from '../utils/encoder';
+import { FeatureFlagChipData } from '../models/featureFlagModel';
 
 
 interface FeatureFlagsFormProps {
@@ -10,11 +9,14 @@ interface FeatureFlagsFormProps {
   onEncodingTitleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onGenereateEncoding: () => void;
   onAddFeatureFlag: (flagText: string) => void;
-
+  showEncodeButton?: boolean;
+  showEncodingTitleInput?: boolean;
+  sx?: SxProps<Theme> | undefined
 }
 
 
-function FeatureFlagForm({ onAddFeatureFlag, encodingTitle, onEncodingTitleChange, onGenereateEncoding }: FeatureFlagsFormProps) {
+function FeatureFlagForm({ onAddFeatureFlag, encodingTitle, onEncodingTitleChange, onGenereateEncoding, showEncodeButton = true, showEncodingTitleInput = true, sx = { width: { xs: '70%', md: '20%' } } }: FeatureFlagsFormProps) {
+
   const [flagText, setFlagText] = useState('');
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
@@ -36,6 +38,7 @@ function FeatureFlagForm({ onAddFeatureFlag, encodingTitle, onEncodingTitleChang
     if (event.key === 'Enter' || event.key === ',') {
       event.preventDefault()
       onAddFeatureFlag(flagText)
+      setFlagText('')
     }
   }
 
@@ -51,19 +54,24 @@ function FeatureFlagForm({ onAddFeatureFlag, encodingTitle, onEncodingTitleChang
         onKeyDown={onSpecialKeyDown}
         onChange={handleTextChange}
         value={flagText}
-        sx={{ width: { xs: '70%', md: '20%' } }}
+        sx={sx}
         id="outlined-basic"
         label="Enter your feature flags"
         variant="outlined"
       />
-      <TextField
-        onChange={onEncodingTitleChange}
-        value={encodingTitle}
-        sx={{ width: { xs: '70%', md: '20%' } }}
-        id="outlined-basic"
-        label="Enter a Title for your Encoding"
-        variant="outlined"
-      />
+
+      {showEncodingTitleInput
+        &&
+        <TextField
+          onChange={onEncodingTitleChange}
+          value={encodingTitle}
+          sx={sx}
+          id="outlined-basic"
+          label="Enter a Title for your Encoding"
+          variant="outlined"
+        />
+      }
+
       <Button
         onClick={handleAdd}
         style={{
@@ -74,14 +82,17 @@ function FeatureFlagForm({ onAddFeatureFlag, encodingTitle, onEncodingTitleChang
       >
         Add
       </Button>
-      <Button
-        onClick={onGenereateEncoding}
-        color='primary' style={{
-          padding: '1em',
-          width: '6rem'
-        }} size="large" variant="contained">
-        Encode
-      </Button>
+      {showEncodeButton &&
+        <Button
+          onClick={onGenereateEncoding}
+          color='primary' style={{
+            padding: '1em',
+            width: '6rem'
+          }} size="large" variant="contained">
+          Encode
+        </Button>
+      }
+
     </Box>
   )
 }
