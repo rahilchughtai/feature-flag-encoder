@@ -82,17 +82,26 @@ function App() {
 
 
       <ChipsList chipData={featureFlags} onChipClick={(key) => handleClick(key)} onChipDelete={(key) => handleDelete(key)} />
+      <FeatureFlagForm>
+        <FeatureFlagForm.FlagTextField
+          onAddFeatureFlag={addFeatureFlag}
+        />
+        <FeatureFlagForm.EncodingTextField
+          encodingTitle={encodingTitle}
+          onEncodingTitleChange={handleEncodingTitleChange}
+        />
+        <FeatureFlagForm.AddButton
+          onAddFeatureFlag={addFeatureFlag}
+        />
+        <FeatureFlagForm.EncodeButton
+          onGenereateEncoding={genereateEncoding}
+        />
+      </FeatureFlagForm>
 
-
-      <FeatureFlagForm
-        featureFlags={featureFlags}
-        encodingTitle={encodingTitle}
-        onEncodingTitleChange={handleEncodingTitleChange}
-        onGenereateEncoding={genereateEncoding}
-        onAddFeatureFlag={addFeatureFlag}
-      />
-
-      <EncodedDataDisplay setEncodingList={setEncodingList} encodingList={encodingList} />
+      <EncodedDataDisplay>
+        <EncodedDataDisplay.Title encodingList={encodingList} />
+        <EncodedDataDisplay.ListItem encodingList={encodingList} setEncodingList={setEncodingList} />
+      </EncodedDataDisplay>
 
     </ThemeProvider>
   );

@@ -1,5 +1,5 @@
 import { Paper, Stack, TextField, Typography, IconButton, Tooltip, Modal, Box } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { FeatureFlagEncoding } from '../models/featureFlagModel';
 import { encodeFlags } from '../utils/encoder';
 import Grid from '@mui/material/Grid2';
@@ -11,10 +11,10 @@ import FlagChip from './chips/FlagChip';
 import { AddCircleOutlined } from '@mui/icons-material';
 import FeatureFlagForm from './FeatureFlagForm';
 import ChipsList from './chips/ChipsList';
+import { SnackbarContext } from '../context/snackbar';
 
 interface EncodingListProps {
     encodingList: FeatureFlagEncoding[],
-    handleCopy: (text: string) => void
     setEncodingList: React.Dispatch<React.SetStateAction<FeatureFlagEncoding[]>>
 }
 
@@ -32,15 +32,15 @@ const style = {
 };
 
 
-export default function EncodedDataListItem({ encodingList, handleCopy, setEncodingList }: EncodingListProps) {
+export default function EncodedDataListItem({ encodingList, setEncodingList }: EncodingListProps) {
 
-    const [open, setOpen] = useState(false);
+
+    const { setSnackbarOpen } = useContext(SnackbarContext)
+    const [modelOpen, setModelOpen] = useState(false)
+
     const [clickedEncodingIndex, setClickedEncoding] = useState(0);
 
     const clickedEncodingFeatureFlags = encodingList.length === 0 ? [] : encodingList[clickedEncodingIndex].featureFlags
-
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
 
     const handleMoveDown = (index: number) => {
         if (index === encodingList.length - 1) {
@@ -52,6 +52,14 @@ export default function EncodedDataListItem({ encodingList, handleCopy, setEncod
         updatedList[index] = temp;
         setEncodingList(updatedList);
     }
+
+
+    const handleCopy = async (text: string) => {
+        if (!text) { return }
+        await navigator.clipboard.writeText(text);
+        setSnackbarOpen(true)
+    };
+
 
     const handleMoveUp = (index: number) => {
         if (index === 0) {
@@ -90,7 +98,7 @@ export default function EncodedDataListItem({ encodingList, handleCopy, setEncod
 
     const handleAddFlag = (index: number) => {
         setClickedEncoding(index)
-        handleOpen()
+        setModelOpen(true)
     }
 
 
@@ -192,8 +200,8 @@ export default function EncodedDataListItem({ encodingList, handleCopy, setEncod
             }
             )}
             <Modal
-                open={open}
-                onClose={handleClose}
+                open={modelOpen}
+                onClose={() => setModelOpen(false)}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -204,15 +212,11 @@ export default function EncodedDataListItem({ encodingList, handleCopy, setEncod
                     <ChipsList chipData={clickedEncodingFeatureFlags}
                         onChipClick={(number) => handleChipClick(number, clickedEncodingIndex)}
                         onChipDelete={(number) => handleChipDelete(number, clickedEncodingIndex)} />
+                    <FeatureFlagForm>
+                        <FeatureFlagForm.FlagTextField onAddFeatureFlag={(flagText) => onAddFlagEvent(flagText, clickedEncodingIndex)} />
+                        <FeatureFlagForm.AddButton onAddFeatureFlag={(flagText) => onAddFlagEvent(flagText, clickedEncodingIndex)} />
+                    </FeatureFlagForm>
 
-                    <FeatureFlagForm
-                        sx={{ width: '100%' }}
-                        showEncodingTitleInput={false}
-                        showEncodeButton={false}
-                        onEncodingTitleChange={() => null}
-                        onAddFeatureFlag={(flagText) => onAddFlagEvent(flagText, clickedEncodingIndex)}
-                        onGenereateEncoding={() => null}
-                        featureFlags={clickedEncodingFeatureFlags} encodingTitle='A' />
                 </Box>
             </Modal>
         </>
