@@ -34,12 +34,9 @@ const style = {
 
 export default function EncodedDataListItem({ encodingList, setEncodingList }: EncodingListProps) {
 
-
     const { setSnackbarOpen } = useContext(SnackbarContext)
     const [modelOpen, setModelOpen] = useState(false)
-
     const [clickedEncodingIndex, setClickedEncoding] = useState(0);
-
     const clickedEncodingFeatureFlags = encodingList.length === 0 ? [] : encodingList[clickedEncodingIndex].featureFlags
 
     const handleMoveDown = (index: number) => {
@@ -106,7 +103,9 @@ export default function EncodedDataListItem({ encodingList, setEncodingList }: E
         const updatedList = [...encodingList];
         const key = updatedList[index].featureFlags.length
         updatedList[index].featureFlags.push({ enabled: true, key, label: flagText })
+        updatedList[index].encoding = encodeFlags(updatedList[index].featureFlags)
         setEncodingList(updatedList)
+
 
     }
 
