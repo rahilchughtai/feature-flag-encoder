@@ -66,7 +66,7 @@ function App() {
   const addFeatureFlag = (flagText: string) => {
     setFeatureFlags(flags => [...flags, {
       key: flags.length,
-      label: flagText,
+      label: flagText.trim(),
       enabled: true
     }]);
   }
