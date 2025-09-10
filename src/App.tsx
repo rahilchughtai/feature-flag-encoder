@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import './App.css';
 import {
+  Button,
   createTheme,
   CssBaseline,
   ThemeProvider,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import ChipsList from './components/chips/ChipsList';
@@ -33,7 +35,6 @@ function App() {
   const [featureFlags, setFeatureFlags] = useState<FeatureFlagChipData[]>([]);
   const [encodingTitle, setEncodingTitle] = useState('');
   const [encodingList, setEncodingList] = useLocalStorage<FeatureFlagEncoding[]>('encodingList', []);
-
   const handleEncodingTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
     setEncodingTitle(val);
@@ -71,6 +72,10 @@ function App() {
     }]);
   }
 
+  const copyFlagsOverride = () => {
+    navigator.clipboard.writeText('flagsOverride');
+  }
+
 
 
   return (
@@ -96,6 +101,16 @@ function App() {
         <FeatureFlagForm.EncodeButton
           onGenereateEncoding={genereateEncoding}
         />
+
+        <Tooltip title="Copies 'flagsOverride' to clipboard">
+          <Button
+            onClick={copyFlagsOverride}
+            color='primary' style={{
+              padding: '1em',
+            }} size="large" variant="contained">
+            FlagsOverride
+          </Button>
+        </Tooltip>
       </FeatureFlagForm>
 
       <EncodedDataDisplay>
