@@ -36,7 +36,7 @@ function FeatureFlagsTextField({ onAddFeatureFlag, sx }: FeatureFlagsTextFieldPr
 
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
-    if (val.length >= 0 && val.length <= 10) {
+    if (val.length >= 0 && val.length <= 25) {
       setFlagText(val);
     }
   }
